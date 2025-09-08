@@ -1,79 +1,88 @@
 package com.project.jobportal5.service;
 
+import com.project.jobportal5.entity.Role;
 import com.project.jobportal5.entity.User;
-import com.project.jobportal5.entity.UserRole;
+import com.project.jobportal5.repository.RoleRepository;
 import com.project.jobportal5.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
+@Transactional
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository = null;
+    private final RoleRepository roleRepository = null;
+    private final PasswordEncoder passwordEncoder = null;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    // Save a new user
-    public User saveUser(User user) {
-        // Encrypt password before saving
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
-    }
-
-    // Find user by username
-    public Optional<User> findByUsername(String username) {
-        return userRepository.findByUsername(username);
-    }
-
-    // Find user by email
-    public Optional<User> findByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
-
-    // Check if username exists
-    public boolean existsByUsername(String username) {
-        return userRepository.existsByUsername(username);
-    }
-
-    // Check if email exists
-    public boolean existsByEmail(String email) {
-        return userRepository.existsByEmail(email);
-    }
-
-    // Get all users
-    public List<User> getAllUsers() {
+    public List<User> findAll() {
         return userRepository.findAll();
     }
 
-    // Get users by role
-    public List<User> getUsersByRole(UserRole role) {
-        return userRepository.findByRole(role);
-    }
-
-    // Find user by ID
     public Optional<User> findById(Long id) {
         return userRepository.findById(id);
     }
 
-    // Delete user
-    public void deleteUser(Long id) {
-        userRepository.deleteById(id);
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 
-    // Update user
-    public User updateUser(User user) {
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    public User save(User user) {
         return userRepository.save(user);
     }
 
-    // Create admin user (for initial setup)
-    public User createAdminUser(String username, String email, String password, String firstName, String lastName) {
-        User admin = new User(username, email, password, firstName, lastName, UserRole.ADMIN);
-        return saveUser(admin);
+    public User registerUser(User user, String roleName) {
+        // Encode password
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        // Set default role if not specified
+        if (roleName == null || roleName.isEmpty()) {
+            roleName = "ROLE_USER";
+        }
+
+        // Find or create role
+        Role role = roleRepository.findByName(roleName)
+                .orElseGet(() -> roleRepository.save(new Role(roleName)));
+
+        user.setRoles(Arrays.asList(role));
+        user.setEnabled(true);
+
+        return userRepository.save(user);
+    }
+
+    public boolean existsByUsername(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    public void deleteById(Long id) {
+        userRepository.deleteById(id);
+    }
+
+    public User updateUser(User user) {
+        Optional<User> existingUser = userRepository.findById(user.getId());
+        if (existingUser.isPresent()) {
+            User existing = existingUser.get();
+            existing.setFirstName(user.getFirstName());
+            existing.setLastName(user.getLastName());
+            existing.setEmail(user.getEmail());
+            existing.setPhoneNumber(user.getPhoneNumber());
+            return userRepository.save(existing);
+        }
+        return null;
     }
 }

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login · Job Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap"
+            rel="stylesheet"
+    />
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <link rel="stylesheet" th:href="@{/styles.css}" />
+    <script th:src="@{/navbar.js}"></script>
+</head>
+<body>
+<!-- Header -->
+<header class="site-header">
+    <div class="container nav">
+        <a class="brand" th:href="@{/}">
+            <i class="fa-solid fa-briefcase"></i> Job Portal
+        </a>
+        <nav class="nav-links">
+            <!-- Navbar will be populated by JS -->
+        </nav>
+    </div>
+</header>
+
+<!-- Main Section -->
+<main class="section">
+    <div class="container" style="max-width: 760px">
+        <div class="card">
+            <h1 style="margin: 0 0 0.6rem">Welcome back</h1>
+            <p class="muted" style="margin: 0 0 1rem">
+                Log in to apply for jobs and manage your applications.
+            </p>
+
+            <!-- Login Form -->
+            <form th:action="@{/login}" method="post" th:object="${loginRequest}">
+                <div class="row">
+                    <!-- Email -->
+                    <div class="field">
+                        <label for="email">Email</label>
+                        <input
+                                type="email"
+                                id="email"
+                                th:field="*{email}"
+                                placeholder="you@example.com"
+                                required
+                        />
+                    </div>
+
+                    <!-- Role -->
+                    <div class="field">
+                        <label for="role">Login as</label>
+                        <select id="role" th:field="*{role}">
+                            <option value="user">Job Seeker</option>
+                            <option value="employer">Employer</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div class="row">
+                    <div class="field" style="grid-column: 1/-1">
+                        <label for="password">Password</label>
+                        <input
+                                type="password"
+                                id="password"
+                                th:field="*{password}"
+                                placeholder="Enter password"
+                                required
+                        />
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="form-actions" style="margin-top: 0.6rem">
+                    <button class="btn btn-primary" type="submit">
+                        <i class="fa-solid fa-arrow-right-to-bracket"></i> Log In
+                    </button>
+                    <a c

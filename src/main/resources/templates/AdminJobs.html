@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manage Employers · Job Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap"
+            rel="stylesheet"
+    />
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <link rel="stylesheet" th:href="@{/styles.css}" />
+</head>
+<body>
+<!-- Navbar -->
+<header class="site-header">
+    <div class="container nav">
+        <a class="brand" th:href="@{/}">
+            <i class="fa-solid fa-briefcase"></i> Job Portal
+        </a>
+        <nav class="nav-links">
+            <a th:href="@{/admin/dashboard}">Dashboard</a>
+            <a th:href="@{/admin/users}">Manage Users</a>
+            <a th:href="@{/admin/jobs}">Manage Jobs</a>
+        </nav>
+    </div>
+</header>
+
+<!-- Main Section -->
+<main class="section">
+    <div class="container">
+        <h1 style="margin: 0 0 0.6rem">Manage Employers</h1>
+        <p class="muted" style="margin: 0 0 1rem">
+            Approve/reject company registrations and edit/delete accounts.
+        </p>
+        <div class="card">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Company</th>
+                    <th>Contact</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Loop through employers list -->
+                <tr th:each="employer : ${employers}">
+                    <td th:text="${employer.companyName}">Company</td>
+                    <td th:text="${employer.email}">email@example.com</td>
+                    <td>
+                  <span
+                          th:classappend="${employer.status == 'Approved'} ? 'badge badge-success' : 'badge'"
+                          th:text="${employer.status}"
+                  >
+                    Status
+                  </span>
+                    </td>
+                    <td>
+                        <!-- Action buttons -->
+                        <a
+                                class="btn btn-primary"
+                                th:if="${employer.status == 'Pending'}"
+                                th:href="@{/admin/employers/approve/{id}(id=${employer.id})}"
+                        >Approve</a
+                        >
+                        <a
+                                class="btn btn-outline"
+                                th:if="${employer.status == 'Pending'}"
+                                th:href="@{/admin/employers/reject/{id}(id=${employer.id})}"
+                        >Reject</a
+                        >
+
+                        <a
+                                class="btn btn-outline"
+                                th:if="${employer.status == 'Approved'}"
+                                th:href="@{/admin/employers/suspend/{id}(id=${employer.id})}"
+                        >Suspend</a
+                        >
+
+                        <a
+                                class="btn btn-outline"
+                                th:href="@{/admin/employers/edit/{id}(id=${employer.id})}"
+                        >Edit</a
+                        >
+                        <a
+                                class="btn btn-outline"
+                                th:href="@{/admin/employers/delete/{id}(id=${employer.id})}"
+                        >Delete</a
+                        >
+                    </td>
+                </tr>
+                <!-- Show message if empty -->
+                <tr th:if="${#lists.isEmpty(employers)}">
+                    <td colspan="4" style="text-align:center">No employers found.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="footer-container">
+        <!-- Logo / About -->
+        <div class="footer-section about">
+            <h2 class="footer-logo"><i class="fa-solid fa-fire"></i> Hot Jobs</h2>
+            <p>
+                Your trusted platform for high-intent job openings hand-picked
+                daily.
+            </p>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="footer-section links">
+            <h3>Quick Links</h3>
+            <ul>
+                <li><a th:href="@{/}">Home</a></li>
+                <li><a th:href="@{/jobs}">Browse Jobs</a></li>
+                <li><a th:href="@{/post-job}">Post a Job</a></li>
+                <li><a th:href="@{/contact}">Contact</a></li>
+            </ul>
+        </div>
+
+        <!-- Resources -->
+        <div class="footer-section resources">
+            <h3>Resources</h3>
+            <ul>
+                <li><a th:href="@{/blog}">Blog</a></li>
+                <li><a th:href="@{/faqs}">FAQs</a></li>
+                <li><a th:href="@{/support}">Support</a></li>
+                <li><a th:href="@{/privacy-policy}">Privacy Policy</a></li>
+            </ul>
+        </div>
+
+        <!-- Social -->
+        <div class="footer-section social">
+            <h3>Follow Us</h3>
+            <div class="social-icons">
+                <a href="#"><i class="fa-brands fa-facebook"></i></a>
+                <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+                <a href="#"><i class="fa-brands fa-instagram"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <p>© 2025 Hot Jobs. All Rights Reserved.</p>
+    </div>
+</footer>
+</body>
+</html>

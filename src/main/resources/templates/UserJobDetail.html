@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title th:text="${job.title} + ' · Job Portal'">Job Details · Job Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap"
+            rel="stylesheet"
+    />
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <script th:src="@{/js/navbar.js}"></script>
+</head>
+<body>
+<!-- Header -->
+<header class="site-header">
+    <div class="container nav">
+        <a class="brand" th:href="@{/}">
+            <i class="fa-solid fa-briefcase"></i> Job Portal
+        </a>
+        <nav class="nav-links">
+            <!-- Navbar injected via JS -->
+        </nav>
+    </div>
+</header>
+
+<!-- Main -->
+<main class="section">
+    <div class="container">
+        <div class="card">
+            <div style="display: flex; align-items: center; gap: 1rem">
+                <div class="logo" style="width:72px;height:72px;display:grid;place-items:center;">
+                    <i class="fa-solid fa-pen-ruler" style="color:#7b43f6;font-size:1.6rem"></i>
+                </div>
+                <div>
+                    <h1 style="margin: 0.2rem 0 0.2rem" th:text="${job.title}">Senior Product Designer</h1>
+                    <div class="muted" th:text="${job.company} + ' · ' + ${job.location} + ' · ' + ${job.type}">
+                        Sphere UI · Remote · Full-time
+                    </div>
+                </div>
+                <div style="margin-left:auto;display:flex;gap:0.5rem">
+                    <a class="btn btn-primary" th:href="@{/user-login}">
+                        <i class="fa-solid fa-paper-plane"></i> Apply Now
+                    </a>
+                    <a class="btn btn-outline" href="#apply">Already logged in?</a>
+                </div>
+            </div>
+
+            <hr style="border:none;border-top:1px solid #e2e8f0;margin:1rem 0" />
+
+            <div class="grid grid-2">
+                <div>
+                    <h3>About the role</h3>
+                    <p class="muted" th:text="${job.description}">
+                        You will lead end-to-end product design...
+                    </p>
+
+                    <h3 style="margin: 1rem 0 0.4rem">Requirements</h3>
+                    <ul class="muted" style="margin:0;padding-left:1.1rem">
+                        <li th:each="req : ${job.requirements}" th:text="${req}">Requirement</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Compensation</h3>
+                    <p class="muted" th:text="${job.compensation}">
+                        $120k – $150k + equity...
+                    </p>
+
+                    <h3 style="margin: 1rem 0 0.4rem">Location</h3>
+                    <p class="muted" th:text="${job.location}">Remote (India time overlap preferred)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Apply Now Form -->
+        <div id="apply" class="apply-now" style="display:block">
+            <div class="card apply-panel" style="margin-top:1rem">
+                <div class="notice" style="margin-bottom:0.8rem">
+                    Submitting an application requires login. If you are logged in, continue below.
+                </div>
+
+                <form th:action="@{/applications/submit}" th:object="${application}" method="post">
+                    <input type="hidden" th:value="${job.id}" name="jobId"/>
+
+                    <div class="row">
+                        <div class="field">
+                            <label for="name">Full name</label>
+                            <input id="name" th:field="*{name}" placeholder="Your name" />
+                        </div>
+                        <div class="field">
+                            <label for="email">Email</label>
+                            <input id="email" type="email" th:field="*{email}" placeholder="you@example.com" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="field" style="grid-column:1/-1">
+                            <label for="note">Short note</label>
+                            <textarea id="note" th:field="*{note}" placeholder="Tell us why you're a great fit"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-actions" style="margin-top:0.6rem">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fa-solid fa-paper-plane"></i> Submit application
+                        </button>
+                        <a class="btn btn-outline" th:href="@{/jobs}">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-section about">
+            <h2 class="footer-logo"><i class="fa-solid fa-fire"></i> Hot Jobs</h2>
+            <p>Your trusted platform for high-intent job openings hand-picked daily.</p>
+        </div>
+
+        <div class="footer-section links">
+            <h3>Quick Links</h3>
+            <ul>
+                <li><a th:href="@{/}">Home</a></li>
+                <li><a th:href="@{/jobs}">Browse Jobs</a></li>
+                <li><a th:href="@{/jobs/new}">Post a Job</a></li>
+                <li><a th:href="@{/contact}">Contact</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-section resources">
+            <h3>Resources</h3>
+            <ul>
+                <li><a th:href="@{/blog}">Blog</a></li>
+                <li><a th:href="@{/faqs}">FAQs</a></li>
+                <li><a th:href="@{/support}">Support</a></li>
+                <li><a th:href="@{/privacy}">Privacy Policy</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-section social">
+            <h3>Follow Us</h3>
+            <div class="social-icons">
+                <a href="#"><i class="fa-brands fa-facebook"></i></a>
+                <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+                <a href="#"><i class="fa-brands fa-instagram"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <p>© 2025 Hot Jobs. All Rights Reserved.</p>
+    </div>
+</footer>
+</body>
+</html>
