@@ -14,71 +14,60 @@
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
-    <link rel="stylesheet" th:href="@{/styles.css}" />
+    <link th:href="@{/styles.css}" rel="stylesheet" />
+    <script th:src="@{/navbar.js}"></script>
 </head>
 <body>
 <!-- Header -->
 <header class="site-header">
     <div class="container nav">
-        <a class="brand" th:href="@{/}">
-            <i class="fa-solid fa-briefcase"></i> Job Portal
-        </a>
+        <a class="brand" th:href="@{/}"
+        ><i class="fa-solid fa-briefcase"></i> Job Portal</a
+        >
         <nav class="nav-links">
-            <a th:href="@{/admin-dashboard}">Dashboard</a>
-            <a th:href="@{/admin-users}">Manage Users</a>
-            <a th:href="@{/admin-employers}">Manage Employers</a>
+            <!-- Navbar populated dynamically -->
         </nav>
     </div>
 </header>
 
-<!-- Main Section -->
+<!-- Main Content -->
 <main class="section">
     <div class="container">
         <h1 style="margin: 0 0 0.6rem">Manage jobs</h1>
         <p class="muted" style="margin: 0 0 1rem">
-            Approve/reject job posts and remove expired/invalid jobs.
+            View, edit, and delete job postings.
         </p>
-
         <div class="card">
             <table class="table">
                 <thead>
                 <tr>
                     <th>Title</th>
-                    <th>Company</th>
                     <th>Status</th>
+                    <th>Applicants</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
-                <!-- Dynamic rows -->
+                <!-- Loop over jobs -->
                 <tr th:each="job : ${jobs}">
                     <td th:text="${job.title}">Frontend Engineer</td>
-                    <td th:text="${job.companyName}">NovaCloud</td>
                     <td>
-                  <span class="badge"
-                        th:classappend="${job.status == 'APPROVED'} ? ' badge-success' : (${job.status == 'PENDING'} ? ' badge-warning' : ' badge-danger')"
-                        th:text="${job.status}">
-                    Pending
+                  <span class="status-dot"
+                        th:classappend="${job.status == 'Open'} ? ' status-open' :
+                                        (${job.status == 'Paused'} ? ' status-paused' : ' status-closed')">
                   </span>
+                        <span th:text="${job.status}">Open</span>
                     </td>
+                    <td th:text="${job.applicantsCount}">23</td>
                     <td>
-                        <!-- Show Approve/Reject if job is Pending -->
-                        <a th:if="${job.status == 'PENDING'}"
-                           th:href="@{/admin/jobs/approve/{id}(id=${job.id})}"
-                           class="btn btn-primary">Approve</a>
-
-                        <a th:if="${job.status == 'PENDING'}"
-                           th:href="@{/admin/jobs/reject/{id}(id=${job.id})}"
-                           class="btn btn-outline">Reject</a>
-
-                        <!-- Show Archive if job is Approved -->
-                        <a th:if="${job.status == 'APPROVED'}"
-                           th:href="@{/admin/jobs/archive/{id}(id=${job.id})}"
-                           class="btn btn-outline">Archive</a>
-
-                        <!-- Always show Remove -->
-                        <a th:href="@{/admin/jobs/remove/{id}(id=${job.id})}"
-                           class="btn btn-outline">Remove</a>
+                        <a class="btn btn-outline" th:href="@{/employer/jobs/edit/{id}(id=${job.id})}">Edit</a>
+                        <a class="btn btn-outline"
+                           th:if="${job.status == 'Open'}"
+                           th:href="@{/employer/jobs/pause/{id}(id=${job.id})}">Pause</a>
+                        <a class="btn btn-outline"
+                           th:if="${job.status == 'Paused'}"
+                           th:href="@{/employer/jobs/open/{id}(id=${job.id})}">Open</a>
+                        <a class="btn btn-outline" th:href="@{/employer/jobs/delete/{id}(id=${job.id})}">Delete</a>
                     </td>
                 </tr>
                 </tbody>
@@ -90,6 +79,7 @@
 <!-- Footer -->
 <footer class="footer">
     <div class="footer-container">
+        <!-- Logo / About -->
         <div class="footer-section about">
             <h2 class="footer-logo"><i class="fa-solid fa-fire"></i> Hot Jobs</h2>
             <p>
@@ -97,26 +87,29 @@
             </p>
         </div>
 
+        <!-- Quick Links -->
         <div class="footer-section links">
             <h3>Quick Links</h3>
             <ul>
                 <li><a th:href="@{/}">Home</a></li>
                 <li><a th:href="@{/jobs}">Browse Jobs</a></li>
-                <li><a th:href="@{/post-job}">Post a Job</a></li>
+                <li><a th:href="@{/employer/post-job}">Post a Job</a></li>
                 <li><a th:href="@{/contact}">Contact</a></li>
             </ul>
         </div>
 
+        <!-- Resources -->
         <div class="footer-section resources">
             <h3>Resources</h3>
             <ul>
                 <li><a th:href="@{/blog}">Blog</a></li>
-                <li><a th:href="@{/faq}">FAQs</a></li>
+                <li><a th:href="@{/faqs}">FAQs</a></li>
                 <li><a th:href="@{/support}">Support</a></li>
-                <li><a th:href="@{/privacy}">Privacy Policy</a></li>
+                <li><a th:href="@{/privacy-policy}">Privacy Policy</a></li>
             </ul>
         </div>
 
+        <!-- Social -->
         <div class="footer-section social">
             <h3>Follow Us</h3>
             <div class="social-icons">
@@ -132,5 +125,65 @@
         <p>© 2025 Hot Jobs. All Rights Reserved.</p>
     </div>
 </footer>
+
+<!-- Footer CSS -->
+<style>
+    .footer {
+      background: #1a1a1a;
+      color: #eee;
+      padding: 2rem 1.5rem 1rem;
+      margin-top: 2rem;
+      font-family: Arial, sans-serif;
+    }
+    .footer-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 2rem;
+      max-width: 1100px;
+      margin: auto;
+    }
+    .footer-section h3,
+    .footer-logo {
+      margin-bottom: 1rem;
+      color: #fff;
+    }
+    .footer-logo {
+      font-size: 20px;
+      font-weight: bold;
+      color: #8b5cf6;
+    }
+    .footer-section ul {
+      list-style: none;
+      padding: 0;
+    }
+    .footer-section ul li {
+      margin: 0.5rem 0;
+    }
+    .footer-section ul li a {
+      color: #ccc;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+    .footer-section ul li a:hover {
+      color: #8b5cf6;
+    }
+    .footer .social-icons a {
+      color: #ccc;
+      margin-right: 10px;
+      font-size: 18px;
+      transition: color 0.2s ease;
+    }
+    .footer .social-icons a:hover {
+      color: #8b5cf6;
+    }
+    .footer-bottom {
+      text-align: center;
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid #333;
+      font-size: 14px;
+      color: #aaa;
+    }
+</style>
 </body>
 </html>

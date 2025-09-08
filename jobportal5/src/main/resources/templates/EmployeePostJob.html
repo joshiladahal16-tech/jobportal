@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Manage Jobs · Job Portal</title>
+    <title>Manage Users · Job Portal</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -24,9 +24,9 @@
             <i class="fa-solid fa-briefcase"></i> Job Portal
         </a>
         <nav class="nav-links">
-            <a th:href="@{/admin-dashboard}">Dashboard</a>
-            <a th:href="@{/admin-users}">Manage Users</a>
-            <a th:href="@{/admin-employers}">Manage Employers</a>
+            <a th:href="@{/admin/dashboard}">Dashboard</a>
+            <a th:href="@{/admin/employers}">Manage Employers</a>
+            <a th:href="@{/admin/jobs}">Manage Jobs</a>
         </nav>
     </div>
 </header>
@@ -34,51 +34,30 @@
 <!-- Main Section -->
 <main class="section">
     <div class="container">
-        <h1 style="margin: 0 0 0.6rem">Manage jobs</h1>
+        <h1 style="margin: 0 0 0.6rem">Manage users</h1>
         <p class="muted" style="margin: 0 0 1rem">
-            Approve/reject job posts and remove expired/invalid jobs.
+            Add, update, or remove job seekers.
         </p>
 
         <div class="card">
             <table class="table">
                 <thead>
                 <tr>
-                    <th>Title</th>
-                    <th>Company</th>
-                    <th>Status</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Joined</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
-                <!-- Dynamic rows -->
-                <tr th:each="job : ${jobs}">
-                    <td th:text="${job.title}">Frontend Engineer</td>
-                    <td th:text="${job.companyName}">NovaCloud</td>
+                <!-- Loop through users dynamically -->
+                <tr th:each="user : ${users}">
+                    <td th:text="${user.fullName}">John Doe</td>
+                    <td th:text="${user.email}">john@example.com</td>
+                    <td th:text="${#dates.format(user.joinedDate, 'MMM yyyy')}">Jan 2025</td>
                     <td>
-                  <span class="badge"
-                        th:classappend="${job.status == 'APPROVED'} ? ' badge-success' : (${job.status == 'PENDING'} ? ' badge-warning' : ' badge-danger')"
-                        th:text="${job.status}">
-                    Pending
-                  </span>
-                    </td>
-                    <td>
-                        <!-- Show Approve/Reject if job is Pending -->
-                        <a th:if="${job.status == 'PENDING'}"
-                           th:href="@{/admin/jobs/approve/{id}(id=${job.id})}"
-                           class="btn btn-primary">Approve</a>
-
-                        <a th:if="${job.status == 'PENDING'}"
-                           th:href="@{/admin/jobs/reject/{id}(id=${job.id})}"
-                           class="btn btn-outline">Reject</a>
-
-                        <!-- Show Archive if job is Approved -->
-                        <a th:if="${job.status == 'APPROVED'}"
-                           th:href="@{/admin/jobs/archive/{id}(id=${job.id})}"
-                           class="btn btn-outline">Archive</a>
-
-                        <!-- Always show Remove -->
-                        <a th:href="@{/admin/jobs/remove/{id}(id=${job.id})}"
-                           class="btn btn-outline">Remove</a>
+                        <a class="btn btn-outline" th:href="@{|/admin/users/edit/${user.id}|}">Edit</a>
+                        <a class="btn btn-outline" th:href="@{|/admin/users/delete/${user.id}|}">Remove</a>
                     </td>
                 </tr>
                 </tbody>
@@ -92,9 +71,7 @@
     <div class="footer-container">
         <div class="footer-section about">
             <h2 class="footer-logo"><i class="fa-solid fa-fire"></i> Hot Jobs</h2>
-            <p>
-                Your trusted platform for high-intent job openings hand-picked daily.
-            </p>
+            <p>Your trusted platform for high-intent job openings hand-picked daily.</p>
         </div>
 
         <div class="footer-section links">

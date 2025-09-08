@@ -1,21 +1,17 @@
 package com.project.jobportal5.controller;
 
 import com.project.jobportal5.service.JobService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
+@RequiredArgsConstructor
 public class HomeController {
 
     private final JobService jobService;
-
-    @Autowired
-    public HomeController(JobService jobService) {
-        this.jobService = jobService;
-    }
 
     @GetMapping("/")
     public String home(Model model) {

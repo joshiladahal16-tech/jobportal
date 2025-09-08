@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Manage Jobs · Job Portal</title>
+    <title>Admin Login · Job Portal</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -24,65 +24,58 @@
             <i class="fa-solid fa-briefcase"></i> Job Portal
         </a>
         <nav class="nav-links">
-            <a th:href="@{/admin-dashboard}">Dashboard</a>
-            <a th:href="@{/admin-users}">Manage Users</a>
-            <a th:href="@{/admin-employers}">Manage Employers</a>
+            <a th:href="@{/admin/login}" class="btn btn-outline">Admin Login</a>
         </nav>
     </div>
 </header>
 
-<!-- Main Section -->
+<!-- Main -->
 <main class="section">
-    <div class="container">
-        <h1 style="margin: 0 0 0.6rem">Manage jobs</h1>
-        <p class="muted" style="margin: 0 0 1rem">
-            Approve/reject job posts and remove expired/invalid jobs.
-        </p>
-
+    <div class="container" style="max-width: 720px">
         <div class="card">
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Company</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                <!-- Dynamic rows -->
-                <tr th:each="job : ${jobs}">
-                    <td th:text="${job.title}">Frontend Engineer</td>
-                    <td th:text="${job.companyName}">NovaCloud</td>
-                    <td>
-                  <span class="badge"
-                        th:classappend="${job.status == 'APPROVED'} ? ' badge-success' : (${job.status == 'PENDING'} ? ' badge-warning' : ' badge-danger')"
-                        th:text="${job.status}">
-                    Pending
-                  </span>
-                    </td>
-                    <td>
-                        <!-- Show Approve/Reject if job is Pending -->
-                        <a th:if="${job.status == 'PENDING'}"
-                           th:href="@{/admin/jobs/approve/{id}(id=${job.id})}"
-                           class="btn btn-primary">Approve</a>
+            <h1 style="margin: 0 0 0.6rem">Administrator access</h1>
+            <p class="muted" style="margin: 0 0 1rem">
+                Secure access for administrators only.
+            </p>
 
-                        <a th:if="${job.status == 'PENDING'}"
-                           th:href="@{/admin/jobs/reject/{id}(id=${job.id})}"
-                           class="btn btn-outline">Reject</a>
+            <!-- Thymeleaf form -->
+            <form th:action="@{/admin/login}" method="post" th:object="${adminLogin}">
+                <div class="grid" style="grid-template-columns: 1fr; gap: 0.9rem">
+                    <div class="field">
+                        <label for="email">Email</label>
+                        <input
+                                type="email"
+                                id="email"
+                                th:field="*{email}"
+                                placeholder="admin@gmail.com"
+                                required
+                        />
+                    </div>
 
-                        <!-- Show Archive if job is Approved -->
-                        <a th:if="${job.status == 'APPROVED'}"
-                           th:href="@{/admin/jobs/archive/{id}(id=${job.id})}"
-                           class="btn btn-outline">Archive</a>
+                    <div class="field">
+                        <label for="password">Password</label>
+                        <input
+                                type="password"
+                                id="password"
+                                th:field="*{password}"
+                                placeholder="Enter password"
+                                required
+                        />
+                    </div>
+                </div>
 
-                        <!-- Always show Remove -->
-                        <a th:href="@{/admin/jobs/remove/{id}(id=${job.id})}"
-                           class="btn btn-outline">Remove</a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+                <div class="form-actions" style="display: flex; gap: 0.6rem; margin-top: 0.8rem">
+                    <button class="btn btn-primary" type="submit">
+                        <i class="fa-solid fa-shield-halved"></i> Enter
+                    </button>
+                    <a class="btn btn-outline" th:href="@{/}">Cancel</a>
+                </div>
+            </form>
+
+            <!-- Error message -->
+            <div th:if="${param.error}" class="alert alert-danger" style="margin-top:1rem;">
+                Invalid email or password. Please try again.
+            </div>
         </div>
     </div>
 </main>
@@ -92,9 +85,7 @@
     <div class="footer-container">
         <div class="footer-section about">
             <h2 class="footer-logo"><i class="fa-solid fa-fire"></i> Hot Jobs</h2>
-            <p>
-                Your trusted platform for high-intent job openings hand-picked daily.
-            </p>
+            <p>Your trusted platform for high-intent job openings hand-picked daily.</p>
         </div>
 
         <div class="footer-section links">

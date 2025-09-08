@@ -4,30 +4,23 @@ import com.project.jobportal5.entity.Role;
 import com.project.jobportal5.entity.User;
 import com.project.jobportal5.repository.RoleRepository;
 import com.project.jobportal5.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 @Transactional
 public class UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-
-    @Autowired
-    public UserService(UserRepository userRepository,
-                       RoleRepository roleRepository,
-                       PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     public List<User> findAll() {
         return userRepository.findAll();
@@ -53,14 +46,14 @@ public class UserService {
         // Encode password
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        // Use an effectively-final variable inside the lambda
-        final String resolvedRoleName = (roleName == null || roleName.isEmpty()) ? "ROLE_USER" : roleName;
+        // Compute effective role once so it is effectively final for lambda usage
+        String effectiveRoleName = (roleName == null || roleName.isEmpty()) ? "ROLE_USER" : roleName;
 
         // Find or create role
-        Role role = roleRepository.findByName(resolvedRoleName)
-                .orElseGet(() -> roleRepository.save(new Role(resolvedRoleName)));
+        Role role = roleRepository.findByName(effectiveRoleName)
+                .orElseGet(() -> roleRepository.save(new Role(effectiveRoleName)));
 
-        user.setRoles(List.of(role));
+        user.setRoles(Arrays.asList(role));
         user.setEnabled(true);
 
         return userRepository.save(user);

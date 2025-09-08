@@ -2,7 +2,7 @@ package com.project.jobportal5.service;
 
 import com.project.jobportal5.entity.Job;
 import com.project.jobportal5.repository.JobRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,15 +10,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 @Transactional
 public class JobService {
 
     private final JobRepository jobRepository;
-
-    @Autowired
-    public JobService(JobRepository jobRepository) {
-        this.jobRepository = jobRepository;
-    }
 
     public List<Job> findAll() {
         return jobRepository.findAll();

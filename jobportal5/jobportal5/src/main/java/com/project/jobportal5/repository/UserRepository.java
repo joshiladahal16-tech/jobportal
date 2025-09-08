@@ -1,7 +1,7 @@
 package com.project.jobportal5.repository;
 
-import com.project.jobportal5.entity.User;
 import com.project.jobportal5.entity.Role;
+import com.project.jobportal5.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,5 +14,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
     boolean existsByUsername(String username);
     boolean existsByEmail(String email);
-    List<User> findByRolesContaining(Role role);
+
+    // Query by the ManyToMany collection "roles"
+    List<User> findByRoles_Name(String name);
+    List<User> findByRoles(Role role);
 }
