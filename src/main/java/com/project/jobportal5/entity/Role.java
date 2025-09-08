@@ -19,7 +19,22 @@ public class Role {
     @Column(unique = true, nullable = false)
     private String name;
 
-    public Role(String name) {
-        this.name = name;
+    public Role(String resolvedRoleName) {
+
     }
+
+    public String getName() {
+        return null;
+    }
+
+    public class role {
+        @Id
+        private Long id;
+
+        @Column(nullable = false, unique = true)
+        private String name;   // ✅ now you get getName()
+
+        // getters/setters or Lombok @Data
+    }
+
 }

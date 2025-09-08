@@ -33,10 +33,10 @@ public class AuthController {
         return "register";
     }
 
-    // Convenience route if someone visits /user-register.html directly
+    // ✅ Fixed: use "userForm" instead of "user" to match binding
     @GetMapping("/user-register.html")
     public String legacyRegister(Model model) {
-        model.addAttribute("user", new User());
+        model.addAttribute("userForm", new User());
         return "register";
     }
 
